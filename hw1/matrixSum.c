@@ -127,7 +127,7 @@ void *Worker(void *arg) {
   for (i = first; i <= last; i++)
     for (j = 0; j < size; j++){
       total += matrix[i][j];
-      if (matrix[i][j] > max){
+      if (matrix[i][j] > max){	//updating minimum and maximum global variables as we find better fits in the matrix
       	max = matrix[i][j];
       }
       if (matrix[i][j] < min){

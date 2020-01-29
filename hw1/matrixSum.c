@@ -57,6 +57,8 @@ double start_time, end_time; /* start and end times */
 int size, stripSize;  /* assume size is multiple of numWorkers */
 int sums[MAXWORKERS]; /* partial sums */
 int matrix[MAXSIZE][MAXSIZE]; /* matrix */
+
+//the global variables we update as program executes
 int min = 10000000; //global variable used to store the minimum value of the matrix
 int minPosX;
 int minPosY;
@@ -165,6 +167,16 @@ void *Worker(void *arg) {
 
 void contribute(int partSum,int newMin,int newMinPosX,int newMinPosY,int newMax,int newMaxPosX,int newMaxPosY){
 	pthread_mutex_lock(&barrier);
-	//uptade global vars here
-	pthread_mutex_lock(&barrier);
+	sum += partSum;
+	if (newMin < min){
+		min = newMin;
+		minPosX = newMinPosX;
+		minPosY = newMinPosY;
+	}
+	if (newMax > max){
+		max = newMax;
+		maxPosX = newMaxPosX;
+		maxPosY = newMaxPosY;
+	}
+	pthread_mutex_unlock(&barrier);
 }

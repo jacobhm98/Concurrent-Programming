@@ -20,11 +20,12 @@
 #include <sys/time.h>
 #define MAXSIZE 10000  /* maximum matrix size */
 #define MAXWORKERS 10   /* maximum number of workers */
-//#define DEBUG 1
+#define DEBUG 1
 pthread_mutex_t barrier;  /* mutex lock for the barrier */
 pthread_cond_t go;        /* condition variable for leaving */
 int numWorkers;           /* number of workers */ 
 int numArrived = 0;       /* number who have arrived */
+void contribute(int, int, int, int, int, int, int);
 
 /* a reusable counter barrier */
 void Barrier() {
@@ -57,7 +58,12 @@ int size, stripSize;  /* assume size is multiple of numWorkers */
 int sums[MAXWORKERS]; /* partial sums */
 int matrix[MAXSIZE][MAXSIZE]; /* matrix */
 int min = 10000000; //global variable used to store the minimum value of the matrix
+int minPosX;
+int minPosY;
 int max = 0; //variable to hold maximum value in matrix
+int maxPosX;
+int maxPosY;
+int sum = 0;
 
 void *Worker(void *);
 
@@ -86,7 +92,7 @@ int main(int argc, char *argv[]) {
   /* initialize the matrix */
   for (i = 0; i < size; i++) {
 	  for (j = 0; j < size; j++) {
-          matrix[i][j] = rand()%99;
+          matrix[i][j] = 1; //rand()%99;
 	  }
   }
 
@@ -103,17 +109,19 @@ int main(int argc, char *argv[]) {
 
   /* do the parallel work: create the workers */
   start_time = read_timer();
+  
   for (l = 0; l < numWorkers; l++)
-    pthread_create(&workerid[l], &attr, Worker, (void *) l);
-  pthread_exit(NULL);
+  pthread_create(&workerid[l], &attr, Worker, (void *) l);
+ 
 }
 
 /* Each worker sums the values in one strip of the matrix.
    After a barrier, worker(0) computes and prints the total */
 void *Worker(void *arg) {
   long myid = (long) arg;
-  int total, i, j, first, last;
-
+  int total, i, j, first, last, myMinPosX, myMinPosY, myMaxPosX, myMaxPosY;
+  int myMax = 0;
+  int myMin = 10000000;
 #ifdef DEBUG
   printf("worker %d (pthread id %d) has started\n", myid, pthread_self());
 #endif
@@ -127,24 +135,34 @@ void *Worker(void *arg) {
   for (i = first; i <= last; i++)
     for (j = 0; j < size; j++){
       total += matrix[i][j];
-      if (matrix[i][j] > max){	//updating minimum and maximum global variables as we find better fits in the matrix
-      	max = matrix[i][j];
+      if (matrix[i][j] > myMax){	//updating minimum and maximum global variables as we find better fits in the matrix
+      	myMax = matrix[i][j];
+	myMaxPosX = i;
+	myMaxPosY = j;
       }
       if (matrix[i][j] < min){
-      	min = matrix[i][j];
+      	myMin = matrix[i][j];
+	myMinPosX = i;
+	myMinPosY = j;
       }
     }
+  contribute(total, myMin, myMinPosX, myMinPosY, myMax, myMaxPosX, myMaxPosY);
+  /*
   sums[myid] = total;
   Barrier();
   if (myid == 0) {
     total = 0;
     for (i = 0; i < numWorkers; i++)
       total += sums[i];
-    /* get end time */
     end_time = read_timer();
-    /* print results */
     printf("The total is %d\n", total);
     printf ("The maximum value in the matrix is %d\nThe minimum value is %d\n", max, min);
     printf("The execution time is %g sec\n", end_time - start_time);
   }
+  */
+  return NULL;
+}
+
+void contribute(int partSum,int newMin,int newMinPosX,int newMinPosY,int newMax,int newMaxPosX,int newMaxPosY){
+
 }

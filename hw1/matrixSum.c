@@ -164,5 +164,7 @@ void *Worker(void *arg) {
 }
 
 void contribute(int partSum,int newMin,int newMinPosX,int newMinPosY,int newMax,int newMaxPosX,int newMaxPosY){
-
+	pthread_mutex_lock(&barrier);
+	//uptade global vars here
+	pthread_mutex_lock(&barrier);
 }

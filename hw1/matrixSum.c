@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
   /* initialize the matrix */
   for (i = 0; i < size; i++) {
 	  for (j = 0; j < size; j++) {
-          matrix[i][j] = 1; //rand()%99;
+          matrix[i][j] = rand()%99;
 	  }
   }
 
@@ -150,7 +150,7 @@ void *Worker(void *arg) {
 	myMaxPosX = i;
 	myMaxPosY = j;
       }
-      if (matrix[i][j] < min){
+      if (matrix[i][j] < myMin){
       	myMin = matrix[i][j];
 	myMinPosX = i;
 	myMinPosY = j;

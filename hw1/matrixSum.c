@@ -114,7 +114,15 @@ int main(int argc, char *argv[]) {
   
   for (l = 0; l < numWorkers; l++)
   pthread_create(&workerid[l], &attr, Worker, (void *) l);
- 
+  
+  for (int k = 0; k < numWorkers; k++){
+  	pthread_join(workerid[k], NULL);
+  }
+  end_time = read_timer(); 
+  printf("The total sum of the matrix is: %d\n", sum);
+  printf("The maximum value of the matrix is %d, located at %d, %d\n", max, maxPosX, maxPosY);
+  printf("The minimum value of the matrix is %d, located at %d, %d\n", min, minPosX, minPosY);
+  printf("The execution time is %g sec\n", end_time - start_time);
 }
 
 /* Each worker sums the values in one strip of the matrix.
@@ -159,7 +167,6 @@ void *Worker(void *arg) {
     end_time = read_timer();
     printf("The total is %d\n", total);
     printf ("The maximum value in the matrix is %d\nThe minimum value is %d\n", max, min);
-    printf("The execution time is %g sec\n", end_time - start_time);
   }
   */
   return NULL;

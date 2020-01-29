@@ -20,7 +20,7 @@
 #include <sys/time.h>
 #define MAXSIZE 10000  /* maximum matrix size */
 #define MAXWORKERS 10   /* maximum number of workers */
-#define DEBUG 1
+//#define DEBUG 1
 pthread_mutex_t barrier;  /* mutex lock for the barrier */
 pthread_cond_t go;        /* condition variable for leaving */
 int numWorkers;           /* number of workers */ 
@@ -157,18 +157,6 @@ void *Worker(void *arg) {
       }
     }
   contribute(total, myMin, myMinPosX, myMinPosY, myMax, myMaxPosX, myMaxPosY);
-  /*
-  sums[myid] = total;
-  Barrier();
-  if (myid == 0) {
-    total = 0;
-    for (i = 0; i < numWorkers; i++)
-      total += sums[i];
-    end_time = read_timer();
-    printf("The total is %d\n", total);
-    printf ("The maximum value in the matrix is %d\nThe minimum value is %d\n", max, min);
-  }
-  */
   return NULL;
 }
 

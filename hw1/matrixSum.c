@@ -134,12 +134,15 @@ int main(int argc, char *argv[]) {
 void *Worker(void *arg) {
   long myid = (long) arg;
   int total, j, first, last, myMinPosX, myMinPosY, myMaxPosX, myMaxPosY;
+  //Setting i to 0, and incrementing next line bagoftasks returns
   int i = bagOfTasks(); 
+  //cannot have negative values so 0 is good, and maximum is less than 100 due to rand range
   int myMax = 0;
   int myMin = 10000000;
 #ifdef DEBUG
   printf("worker %d (pthread id %d) has started\n", myid, pthread_self());
 #endif
+  //while the number returned from bagoftasks is less than the matrix size, meaning we have rows left to compute
   while (i < size){
 #ifdef DEBUG
   printf("this is the row being calculated: %d\n", i);
@@ -150,7 +153,7 @@ void *Worker(void *arg) {
       total += matrix[i][j];
       if (matrix[i][j] > myMax){	//updating minimum and maximum global variables as we find better fits in the matrix
       	myMax = matrix[i][j];
-	myMaxPosX = i;
+	myMaxPosX = i;		//saving the position max was found in
 	myMaxPosY = j;
       }
       if (matrix[i][j] < myMin){
@@ -159,15 +162,15 @@ void *Worker(void *arg) {
 	myMinPosY = j;
       }
     }
-  contribute(total, myMin, myMinPosX, myMinPosY, myMax, myMaxPosX, myMaxPosY);
-  i = bagOfTasks();
+  contribute(total, myMin, myMinPosX, myMinPosY, myMax, myMaxPosX, myMaxPosY); //updating global vars
+  i = bagOfTasks(); 	//get new task to compute
   }
-  return NULL;
+  return NULL;		//when theres no more tasks to do, terminate thread
 }
 
 void contribute(int partSum,int newMin, int newMinPosX, int newMinPosY, int newMax, int newMaxPosX, int newMaxPosY){
-	pthread_mutex_lock(&barrier);
-	sum += partSum;
+	pthread_mutex_lock(&barrier);		//updating of shared data structure (global vars), so we need to make sure only one
+	sum += partSum;				//thread does this at a time
 	if (newMin < min){
 		min = newMin;
 		minPosX = newMinPosX;
@@ -178,10 +181,10 @@ void contribute(int partSum,int newMin, int newMinPosX, int newMinPosY, int newM
 		maxPosX = newMaxPosX;
 		maxPosY = newMaxPosY;
 	}
-	pthread_mutex_unlock(&barrier);
+	pthread_mutex_unlock(&barrier);		//release lock
 }
-int bagOfTasks(){
-	pthread_mutex_lock(&bagBarrier);
+int bagOfTasks(){	//return next row to compute
+	pthread_mutex_lock(&bagBarrier);	//we need to lock this as, again, we are updating shared data structures (rowtocompute)
 	int assignedRow = rowToCompute;
 	if (rowToCompute < size){
 		rowToCompute++;

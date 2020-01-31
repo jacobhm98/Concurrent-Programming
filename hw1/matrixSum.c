@@ -22,10 +22,13 @@
 #define MAXWORKERS 10   /* maximum number of workers */
 //#define DEBUG 1
 pthread_mutex_t barrier;  /* mutex lock for the barrier */
+pthread_mutex_t bagBarrier;
 pthread_cond_t go;        /* condition variable for leaving */
 int numWorkers;           /* number of workers */ 
 int numArrived = 0;       /* number who have arrived */
 void contribute(int, int, int, int, int, int, int);
+int bagOfTasks();
+int rowToCompute = 0;
 
 /* a reusable counter barrier */
 void Barrier() {
@@ -82,6 +85,7 @@ int main(int argc, char *argv[]) {
 
   /* initialize mutex and condition variable */
   pthread_mutex_init(&barrier, NULL);
+  pthread_mutex_init(&bagBarrier, NULL);
   pthread_cond_init(&go, NULL);
 
   /* read command line args if any */
@@ -129,20 +133,19 @@ int main(int argc, char *argv[]) {
    After a barrier, worker(0) computes and prints the total */
 void *Worker(void *arg) {
   long myid = (long) arg;
-  int total, i, j, first, last, myMinPosX, myMinPosY, myMaxPosX, myMaxPosY;
+  int total, j, first, last, myMinPosX, myMinPosY, myMaxPosX, myMaxPosY;
+  int i = bagOfTasks(); 
   int myMax = 0;
   int myMin = 10000000;
 #ifdef DEBUG
   printf("worker %d (pthread id %d) has started\n", myid, pthread_self());
 #endif
-
-  /* determine first and last rows of my strip */
-  first = myid*stripSize;
-  last = (myid == numWorkers - 1) ? (size - 1) : (first + stripSize - 1);
-
-  /* sum values in my strip */
+  while (i < size){
+#ifdef DEBUG
+  printf("this is the row being calculated: %d\n", i);
+#endif
+   /* sum values in my strip */
   total = 0;
-  for (i = first; i <= last; i++)
     for (j = 0; j < size; j++){
       total += matrix[i][j];
       if (matrix[i][j] > myMax){	//updating minimum and maximum global variables as we find better fits in the matrix
@@ -157,10 +160,12 @@ void *Worker(void *arg) {
       }
     }
   contribute(total, myMin, myMinPosX, myMinPosY, myMax, myMaxPosX, myMaxPosY);
+  i = bagOfTasks();
+  }
   return NULL;
 }
 
-void contribute(int partSum,int newMin,int newMinPosX,int newMinPosY,int newMax,int newMaxPosX,int newMaxPosY){
+void contribute(int partSum,int newMin, int newMinPosX, int newMinPosY, int newMax, int newMaxPosX, int newMaxPosY){
 	pthread_mutex_lock(&barrier);
 	sum += partSum;
 	if (newMin < min){
@@ -174,4 +179,14 @@ void contribute(int partSum,int newMin,int newMinPosX,int newMinPosY,int newMax,
 		maxPosY = newMaxPosY;
 	}
 	pthread_mutex_unlock(&barrier);
+}
+int bagOfTasks(){
+	pthread_mutex_lock(&bagBarrier);
+	int assignedRow = rowToCompute;
+	if (rowToCompute < size){
+		rowToCompute++;
+	}
+	pthread_mutex_unlock(&bagBarrier);
+	return assignedRow;	
+
 }

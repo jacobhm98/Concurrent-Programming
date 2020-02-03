@@ -23,7 +23,7 @@
 #include <sys/time.h>
 #include <semaphore.h>
 #define MAXSIZE 10000
-#define DEBUG 1
+//#define DEBUG 1
 
 void swap(int, int);
 void* quickSort(void *);
@@ -61,14 +61,19 @@ int main(int argc, char * argv[]){
 	for (int i = 0; i < size; i++){
 		array[i] = rand() % 99;
 	}
+	printf("The array to sort: ");
 	printArray();
 	int pointers[2] = {0, size - 1};
+	double starttime = read_timer();
 	pthread_create(&workerId[0], NULL, quickSort, (void *) pointers); 
 	threadCounter++;
 	pthread_join(workerId[0], NULL);
 	while (threadCounter != 0){
 	}
+	double endtime = read_timer();
+	printf("The sorted array: ");
 	printArray();
+	printf("The execution time is %g sec\n", endtime - starttime);
 	return 0;
 }
 void printArray(){
@@ -101,16 +106,13 @@ void* quickSort(void * arg){
 
 	if (*low < *high){
 		int partitionElement = partition(*low, *high);
-		printf("partition element index: %d\n", partitionElement);
 		sem_wait(&sem);
 		args[0] = *low;
 		args[1] = partitionElement - 1;
-		printf("thread created with these arguments: %d, %d\n", args[0], args[1]);
 		pthread_create(&workerId[threadCounter], NULL, passArgs, (void *) args);
 		threadCounter++;
 
 		int args1[2] = {partitionElement + 1, *high};
-		printf("recursive call with these arguments: %d, %d\n", args1[0], args1[1]);
 		quickSort((void *) args1);
 	}
 	else {

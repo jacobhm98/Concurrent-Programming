@@ -21,8 +21,8 @@
 #include <stdbool.h>
 #include <time.h>
 #include <sys/time.h>
+#include <semaphore.h>
 #define MAXSIZE 10000
-#define MAXWORKERS 10
 #define DEBUG 1
 
 void swap(int, int);
@@ -34,6 +34,11 @@ void printArray();
 //Global vars
 int size;
 int array[MAXSIZE];
+int threadCounter = 0;
+pthread_t workerId[MAXSIZE];
+pthread_mutex_t barrier;
+int args[2];
+sem_t sem;
 
 //timer function taken from matrixSum.c
 double read_timer() {
@@ -50,18 +55,21 @@ double read_timer() {
 }
 
 int main(int argc, char * argv[]){
+	pthread_mutex_init(&barrier, NULL);
+	sem_init(&sem, 1, 1);
 	size = (argc > 1) ? atoi(argv[1]) : MAXSIZE;
 	for (int i = 0; i < size; i++){
 		array[i] = rand() % 99;
 	}
 	printArray();
-	pthread_t workerId[size];
 	int pointers[2] = {0, size - 1};
-	printf("this is the size of the array %d\n", size);
 	pthread_create(&workerId[0], NULL, quickSort, (void *) pointers); 
+	threadCounter++;
 	pthread_join(workerId[0], NULL);
-
-
+	while (threadCounter != 0){
+	}
+	printArray();
+	return 0;
 }
 void printArray(){
 	printf("|");
@@ -70,20 +78,56 @@ void printArray(){
 	}
 	printf("\n");
 }
+
+void * passArgs(void * arg){
+	int * low = (int*) arg;
+	int * high = low + 1;
+	int * passed = (int*) malloc(2 * sizeof(int));
+	*passed = *low;
+	*(passed + 1) = *high;
+	sem_post(&sem);
+	quickSort((void*) passed);
+	
+}
+
 void* quickSort(void * arg){
 	int * low = (int*) arg;
 	int * high = low + 1;
-	int partitionElement = partition(*low, *high);
+	
+#ifdef DEBUG
+	printf("index of low: %d\n", *low);
+	printf("index of high: %d\n", *high);
+#endif
+
+	if (*low < *high){
+		int partitionElement = partition(*low, *high);
+		printf("partition element index: %d\n", partitionElement);
+		sem_wait(&sem);
+		args[0] = *low;
+		args[1] = partitionElement - 1;
+		printf("thread created with these arguments: %d, %d\n", args[0], args[1]);
+		pthread_create(&workerId[threadCounter], NULL, passArgs, (void *) args);
+		threadCounter++;
+
+		int args1[2] = {partitionElement + 1, *high};
+		printf("recursive call with these arguments: %d, %d\n", args1[0], args1[1]);
+		quickSort((void *) args1);
+	}
+	else {
+		threadCounter--;
+		return NULL;
+	}
 
 
 }
 
 int partition(int low, int high){
+	pthread_mutex_lock(&barrier);
 	int pivot = high;
-	array[high] = 50;
 	int invPos = low - 1;		//index in array where we know all elements below it are smaller than the pivot: an invariant
 #ifdef DEBUG
-	printf("pivot index: %d\n", pivot);
+	printf("pivot : %d\n", array[pivot]);
+	printf("invariant pos: %d\n", invPos);
 	printArray();
 #endif
 	for (int i = low; i < high; i++){
@@ -100,8 +144,8 @@ int partition(int low, int high){
 #ifdef DEBUG
 	printArray();
 #endif
+	pthread_mutex_unlock(&barrier);
 	return invPos;
-
 }
 
 // A method to swap two elements given their positions in the array that we are to sort

@@ -11,6 +11,7 @@
 using namespace std;
 
 string reverseWord(string);
+bool isPalindrome(string);
 
 int main (){
 	ifstream in;
@@ -24,6 +25,9 @@ int main (){
 	}
 	string word;
 	in >> word;
+	isPalindrome(word);
+	string palindrome = "abba";
+	isPalindrome(palindrome);
 	reverseWord(word);
 	while (in >> word){
 		wordList.insert(word);
@@ -35,11 +39,27 @@ int main (){
 }
 
 bool isPalindrome(string word){
-	bool isPalindrome = false;
-	if (word.length() == 1){
-		isPalindrome = true;
-		return isPalindrome;
+	bool isPalindrome = true;
+	int p1 = 0;
+	int p2 = word.length() - 1;
+	while (p1 < p2){
+		if (word[p1] ==  word[p2]){
+			p1++;
+			p2--;
+		}
+		else {
+			isPalindrome = false;
+			break;
+		}
 	}
+#ifdef DEBUG
+	if(isPalindrome){
+	cout << word << " is a palindrome" << endl;
+	}
+	else{
+	cout << word << " is not a palindrome" << endl;
+	}
+#endif
 	return isPalindrome;
 }
 string reverseWord(string word){

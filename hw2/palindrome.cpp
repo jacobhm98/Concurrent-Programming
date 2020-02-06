@@ -1,4 +1,3 @@
-
 #ifndef _REENTRANT
 #define _REENTRANT
 #endif
@@ -7,41 +6,56 @@
 #include <iostream>
 #include <string>
 #include <set>
-#define DEBUG 1
+#define DEBUG 0
 using namespace std;
 
 string reverseWord(string);
 bool isPalindrome(string);
 
 int main (){
+	
+	//input/output filestreams with files
 	ifstream in;
 	ofstream out;
 	in.open("dictionary/words");
 	out.open("dictionary/palindromes");
-	set<string> wordList;
+
+	// Make sure the dictionary is in the right place
 	if (!in) {
 		cerr << "there is no dictionary file at ./dictionary/words" << endl;
 		return 1;
 	}
+	//Read input word by word and put in a set (red black tree)
+	set<string> wordList;
 	string word;
 	reverseWord(word);
 	while (in >> word){
 		wordList.insert(word);
 	}
-	set<string>::iterator i;
-	for (i = wordList.begin(); i != wordList.end(); ++i){
-		if (isPalindrome(*i)){
-			out << *i << endl;
-		}
-		
-		else if (wordList.find(reverseWord(*i)) != wordList.end()){
-			out << *i << endl;
-			out << reverseWord(*i) << endl;
-			wordList.erase(wordList.find(reverseWord(*i)));
-			//wordList.erase(wordList.find(*i));
-		}
-	}
 	cout << "The size of the wordList is: " << wordList.size() << endl;
+
+	// concurrently iterate over the words in the set and store the palindromes in a new set
+	set<string> palindromes;
+#pragma omp parallel
+#pragma omp single
+	{
+	for (set<string>::iterator i = wordList.begin(); i != wordList.end(); ++i){
+#pragma omp task untied
+		{
+		if (isPalindrome(*i)){
+			palindromes.insert(*i);
+		}
+		//if the reverse of the current word is in the wordlist, insert them both into palindrome	
+		else if (wordList.find(reverseWord(*i)) != wordList.end()){
+			palindromes.insert(*i);
+			palindromes.insert(reverseWord(*i));
+		}
+		}
+#pragma omp taskwait
+	}
+	}
+
+
 	cout << "palindromes printed to ./dictionary/palindromes" << endl;
 	return 0;
 }
@@ -60,11 +74,11 @@ bool isPalindrome(string word){
 			break;
 		}
 	}
-#ifdef DEBUG
-	if(isPalindrome){
+#if DEBUG == 1
+	if (isPalindrome){
 	cout << word << " is a palindrome" << endl;
 	}
-	else{
+	else {
 	cout << word << " is not a palindrome" << endl;
 	}
 #endif
@@ -75,7 +89,7 @@ string reverseWord(string word){
 	for (int i = word.length() - 1; i >= 0; i--){
 		reversed += word[i];
 	}
-#ifdef DEBUG
+#if DEBUG == 1
 	cout << reversed.length() << " = " << word.length() << " and " << reversed << " is " << word << " reversed " << endl;
 #endif
 	return reversed;

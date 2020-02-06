@@ -97,6 +97,7 @@ void * passArgs(void * arg){
 	*(passed + 1) = *high;
 	sem_post(&sem);
 	quickSort((void*) passed);
+	free(passed);
 	
 }
 //the managing method of quicksort, spawning threads and doing recursive calls with the right pointers

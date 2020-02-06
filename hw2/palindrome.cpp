@@ -7,7 +7,10 @@
 #include <iostream>
 #include <string>
 #include <set>
+#define DEBUG 1
 using namespace std;
+
+string reverseWord(string);
 
 int main (){
 	ifstream in;
@@ -20,8 +23,11 @@ int main (){
 		return 1;
 	}
 	string word;
+	in >> word;
+	reverseWord(word);
 	while (in >> word){
-		wordList.insert(word);	
+		wordList.insert(word);
+
 	}
 	cout << "The size of the wordList is: " << wordList.size() << endl;
 	cout << "palindromes printed to ./dictionary/palindromes" << endl;
@@ -35,4 +41,14 @@ bool isPalindrome(string word){
 		return isPalindrome;
 	}
 	return isPalindrome;
+}
+string reverseWord(string word){
+	string reversed;
+	for (int i = word.length() - 1; i >= 0; i--){
+		reversed += word[i];
+	}
+#ifdef DEBUG
+	cout << reversed.length() << " = " << word.length() << " and " << reversed << " is " << word << " reversed " << endl;
+#endif
+	return reversed;
 }

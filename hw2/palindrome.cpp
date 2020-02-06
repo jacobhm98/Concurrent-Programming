@@ -39,20 +39,22 @@ int main (){
 #pragma omp parallel
 #pragma omp single
 	{
-	for (set<string>::iterator i = wordList.begin(); i != wordList.end(); ++i){
 #pragma omp task untied
 		{
-		if (isPalindrome(*i)){
-			palindromes.insert(*i);
+			for (set<string>::iterator i = wordList.begin(); i != wordList.end(); ++i){
+#pragma omp task
+				{
+					if (isPalindrome(*i)){
+						palindromes.insert(*i);
+					}
+					//if the reverse of the current word is in the wordlist, insert them both into palindrome	
+					else if (wordList.find(reverseWord(*i)) != wordList.end()){
+						palindromes.insert(*i);
+						palindromes.insert(reverseWord(*i));
+					}
+				}
+			}
 		}
-		//if the reverse of the current word is in the wordlist, insert them both into palindrome	
-		else if (wordList.find(reverseWord(*i)) != wordList.end()){
-			palindromes.insert(*i);
-			palindromes.insert(reverseWord(*i));
-		}
-		}
-#pragma omp taskwait
-	}
 	}
 
 

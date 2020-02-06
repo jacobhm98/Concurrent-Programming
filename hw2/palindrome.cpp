@@ -24,14 +24,22 @@ int main (){
 		return 1;
 	}
 	string word;
-	in >> word;
-	isPalindrome(word);
-	string palindrome = "abba";
-	isPalindrome(palindrome);
 	reverseWord(word);
 	while (in >> word){
 		wordList.insert(word);
-
+	}
+	set<string>::iterator i;
+	for (i = wordList.begin(); i != wordList.end(); ++i){
+		if (isPalindrome(*i)){
+			out << *i << endl;
+		}
+		
+		else if (wordList.find(reverseWord(*i)) != wordList.end()){
+			out << *i << endl;
+			out << reverseWord(*i) << endl;
+			wordList.erase(wordList.find(reverseWord(*i)));
+			//wordList.erase(wordList.find(*i));
+		}
 	}
 	cout << "The size of the wordList is: " << wordList.size() << endl;
 	cout << "palindromes printed to ./dictionary/palindromes" << endl;

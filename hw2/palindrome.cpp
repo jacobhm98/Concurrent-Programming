@@ -55,6 +55,7 @@ int main (int argc, char * argv[]){
 
 	set<string> palindromes;
 	omp_set_num_threads(NUM_THREADS);
+	cout << "Maximum number of threads allowed: " << NUM_THREADS << endl;
 	double startTime = omp_get_wtime();
 #pragma omp parallel	//block of code that we want to execute using multiple threads
 	#pragma omp single	//we only want one thread to iterate through the foor loop and spawn tasks for the other threads

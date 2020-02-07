@@ -4,11 +4,12 @@
  * ./dictionary/words and the palindromic words will be printed to ./dictionary/palindromes.
  * 
  * Compile: g++ palindromes.cpp -fopenmp -o -palindromes
- * Usage: ./palindromes #NUMBER_OF_THREADS
+ * Usage: ./palindromes #NUM_THREADS
  * View palindromic words: cat dictionary/palindromes
  * Written by Jacob Hedén Malm (@jacobhm98) 07/02/2020
  */
 
+//todo: number of cores should be an argument. print execution time of parallel part.
 
 #ifndef _REENTRANT
 #define _REENTRANT
@@ -18,13 +19,19 @@
 #include <iostream>
 #include <string>
 #include <set>
+#include <stdlib.h>
 #define DEBUG 0
+#define DEFAULT_THREADS 1
+
 using namespace std;
 
 string reverseWord(string);
 bool isPalindrome(string);
 
-int main (){
+int NUM_THREADS;
+
+int main (int argc, char * argv[]){
+	NUM_THREADS = (argc > 1) ? atoi(argv[1]) : DEFAULT_THREADS;
 	
 	//input/output filestreams with files
 	ifstream in;
@@ -47,6 +54,8 @@ int main (){
 	cout << "The size of the wordList is: " << wordList.size() << endl;
 
 	set<string> palindromes;
+	omp_set_num_threads(NUM_THREADS);
+	double startTime = omp_get_wtime();
 #pragma omp parallel	//block of code that we want to execute using multiple threads
 	#pragma omp single	//we only want one thread to iterate through the foor loop and spawn tasks for the other threads
 	{
@@ -73,11 +82,12 @@ int main (){
 			}
 		}
 	}
+	double endTime = omp_get_wtime() - startTime;
 	//iterate over list of palindromes and print them to outputstream (./dictionary/palindromes)
 	for (set<string>::iterator i = palindromes.begin(); i != palindromes.end(); i++){
 		out << *i << endl;
 	}
-
+	cout << "Execution time of the parallel region is: " << endTime << endl;
 	cout << "palindromes printed to ./dictionary/palindromes" << endl;
 	return 0;
 }

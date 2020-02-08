@@ -52,15 +52,19 @@ int main (int argc, char * argv[]){
 	while (in >> word){
 		wordList.push_back(word);
 	}
-	
-	sort(wordList.begin(), wordList.end());	
 	cout << "The size of the wordList is: " << wordList.size() << endl;
+	//for some reason we need to sort the array, or we don't find all the palindromes. Even though
+	//it's supposed to be sorted already.	
+	sort(wordList.begin(), wordList.end());	
 	
+	//vector where we are going to store found palindromes, take user input to set threads
+	//and start the timer.	
 	vector<string> palindromes;
 	omp_set_num_threads(NUM_THREADS);
 	cout << "Maximum number of threads allowed: " << NUM_THREADS << endl;
 	double startTime = omp_get_wtime();
 
+//parallelizable for loop
 #pragma omp parallel for	
 	for (int i = 0; i < wordList.size(); i ++){
 		if (isPalindrome(wordList[i])){

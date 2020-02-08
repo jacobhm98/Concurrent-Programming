@@ -20,6 +20,8 @@
 #include <string>
 #include <set>
 #include <stdlib.h>
+#include <vector>
+#include <algorithm>
 #define DEBUG 0
 #define DEFAULT_THREADS 1
 
@@ -44,50 +46,43 @@ int main (int argc, char * argv[]){
 		cerr << "there is no dictionary file at ./dictionary/words" << endl;
 		return 1;
 	}
-	//Read input word by word and put in a set (red black tree)
-	set<string> wordList;
+	//Read input word by word and put in a vector
+	vector<string> wordList;
 	string word;
-	reverseWord(word);
 	while (in >> word){
-		wordList.insert(word);
+		wordList.push_back(word);
 	}
+	
+	sort(wordList.begin(), wordList.end());	
 	cout << "The size of the wordList is: " << wordList.size() << endl;
-
-	set<string> palindromes;
+	
+	vector<string> palindromes;
 	omp_set_num_threads(NUM_THREADS);
 	cout << "Maximum number of threads allowed: " << NUM_THREADS << endl;
 	double startTime = omp_get_wtime();
-#pragma omp parallel	//block of code that we want to execute using multiple threads
-	#pragma omp single	//we only want one thread to iterate through the foor loop and spawn tasks for the other threads
-	{
-		#pragma omp task untied 	/* iterating through the for loop is the main task, so 
-						 * burden should be shared if execution is suspended
-						 */
-		{
-			for (set<string>::iterator i = wordList.begin(); i != wordList.end(); ++i){
-			#pragma omp task	//spawn the tasks of evaluating whether each word should be inserted into palindrome list
-				{ 
-					if (isPalindrome(*i)){	//if the word is by itself a palindrome, insert
-						palindromes.insert(*i);
-					}
-					/* if the reverse of the current word is in the wordlist and it hasn't already been inserted,
-					 * insert them both into set of palindromes
-					 */	
-					else if (wordList.find(reverseWord(*i)) != wordList.end()){
-						if(palindromes.find(*i) == palindromes.end()){
-							palindromes.insert(*i);
-							palindromes.insert(reverseWord(*i));
-						}
-					}
-				}
+
+#pragma omp parallel for	
+	for (int i = 0; i < wordList.size(); i ++){
+		if (isPalindrome(wordList[i])){
+		#pragma omp critical
+			{
+			palindromes.push_back(wordList[i]);
 			}
 		}
-	}
+		else if (binary_search(wordList.begin(), wordList.end(), reverseWord(wordList[i]))){
+		#pragma omp critical	
+			{
+			palindromes.push_back(wordList[i]);
+			}
+		}
+		
+	}	
+
 	double endTime = omp_get_wtime() - startTime;
 	//iterate over list of palindromes and print them to outputstream (./dictionary/palindromes)
-	cout << "palindromes found: " << palindromes.size() << endl;
-	for (set<string>::iterator i = palindromes.begin(); i != palindromes.end(); i++){
-		out << *i << endl;
+	cout << "number of palindromes found: " << palindromes.size() << endl;
+	for (int i  = 0; i < palindromes.size(); i++){
+		out << palindromes[i] << endl;
 	}
 	cout << "Execution time of the parallel region is: " << endTime << endl;
 	cout << "palindromes printed to ./dictionary/palindromes" << endl;

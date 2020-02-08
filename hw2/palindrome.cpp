@@ -9,7 +9,6 @@
  * Written by Jacob Hedén Malm (@jacobhm98) 07/02/2020
  */
 
-//todo: number of cores should be an argument. print execution time of parallel part.
 
 #ifndef _REENTRANT
 #define _REENTRANT

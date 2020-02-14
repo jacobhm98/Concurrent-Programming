@@ -19,19 +19,21 @@ using std::endl;
 //function declarations
 void * mWork(void *);
 void * wWork(void *);
+void useBathroom(long);
 
 //global variables n synchronization structures
 sem_t lock;
 sem_t mEnter;
 sem_t wEnter;
-int bathroomUsers = 0;
 int menWaiting = 0;
 int womenWaiting = 0;
+int menUsingBathroom = 0;
+int womenUsingBathroom = 0;
 
 int main(int argc, char **argv){
 	sem_init(&lock, SHARED, 1);
-	sem_init(&mEnter, SHARED, 1);
-	sem_init(&wEnter, SHARED, 1);
+	sem_init(&mEnter, SHARED, 0);
+	sem_init(&wEnter, SHARED, 0);
 	srand(time(0));
 	//set number of men and women from command line arguments, or if no args set them to default values
 	int numMen;
@@ -59,26 +61,78 @@ int main(int argc, char **argv){
 
 void * mWork(void * id){
 	long myId = (long) id;
-	sem_wait(&lock);
-	unsigned int workTime = rand() % 60;
-	cout << "thread " << pthread_self() << " is boutta work for: " << workTime << " seconds" << endl;
-	sem_post(&lock);
-	sleep(workTime);
-	cout << "thread " << pthread_self() << " needs to go to the bathroom!" << endl;
-
+	while (true){
+		//atomically generate worktime and go to work, as we cannot have concurrent calls to rand
+		sem_wait(&lock);
+		unsigned int workTime = rand() % 60;
+		cout << "worker " << myId << " is boutta work for: " << workTime << " seconds" << endl;
+		sem_post(&lock);
+		sleep(workTime);
+		cout << "worker " << myId << " needs to go to the bathroom!" << endl;
+		
+		//wait for bathroom to be empty of women
+		sem_wait(&lock);
+		if (womenUsingBathroom > 0){
+			menWaiting++;
+			sem_post(&lock);
+			sem_wait(&mEnter);
+		}
+		menUsingBathroom++;
+		//empty cue, pass the baton
+		if (menWaiting > 0){
+			menWaiting--;
+			sem_post(&mEnter);
+		}
+		//sem_post(&lock); //why?
+		useBathroom(myId);
+		sem_wait(&lock);
+		menUsingBathroom--;
+		if (menUsingBathroom == 0 && womenWaiting > 0){
+			womenWaiting--;
+			sem_post(&wEnter);
+		}
+		sem_post(&lock);
+	}		
 	return NULL;
 }
 
 void * wWork(void * id){
 	long myId = (long) id;
-	sem_wait(&lock);
-	unsigned int workTime = rand() % 60;
-	cout << "thread " << pthread_self() << " is boutta work for: " << workTime << " seconds" << endl;
-	sem_post(&lock);
-	sleep(workTime);
-	cout << "thread " << pthread_self() << " needs to go to the bathroom!" << endl;
+	while (true){
+		//atomically generate worktime and go to work, as we cannot have concurrent calls to rand
+		sem_wait(&lock);
+		unsigned int workTime = rand() % 60;
+		cout << "worker " << myId << " is boutta work for: " << workTime << " seconds" << endl;
+		sem_post(&lock);
+		sleep(workTime);
+		cout << "worker " << myId << " needs to go to the bathroom!" << endl;
+		
+		//wait for bathroom to be empty of women
+		sem_wait(&lock);
+		if (menUsingBathroom > 0){
+			womenWaiting++;
+			sem_post(&lock);
+			sem_wait(&wEnter);
+		}
+		womenUsingBathroom++;
+		//empty cue, pass the baton
+		if (womenWaiting > 0){
+			womenWaiting--;
+			sem_post(&wEnter);
+		}
+		//sem_post(&lock); //why?
+		useBathroom(myId);
+		sem_wait(&lock);
+		womenUsingBathroom--;
+		if (womenUsingBathroom == 0 && menWaiting > 0){
+			menWaiting--;
+			sem_post(&mEnter);
+		}
+		sem_post(&lock);
+	}		
 	return NULL;
 }
+
 void useBathroom(long id){
 	sem_wait(&lock);
 	unsigned int bathroomTime = rand() % 5;

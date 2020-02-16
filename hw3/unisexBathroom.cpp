@@ -1,4 +1,3 @@
-
 #ifndef _REENTRANT
 #define _REENTRANT
 #endif
@@ -70,7 +69,7 @@ void * mWork(void * id){
 		sleep(workTime);
 		cout << "worker " << myId << " needs to go to the bathroom!" << endl;
 		
-		//wait for bathroom to be empty of women
+		//wait for bathroom to be empty of women and join the cue
 		sem_wait(&lock);
 		if (womenUsingBathroom > 0){
 			menWaiting++;
@@ -83,7 +82,7 @@ void * mWork(void * id){
 			menWaiting--;
 			sem_post(&mEnter);
 		}
-		//sem_post(&lock); //why?
+		sem_post(&lock); //why?
 		useBathroom(myId);
 		sem_wait(&lock);
 		menUsingBathroom--;
@@ -120,7 +119,7 @@ void * wWork(void * id){
 			womenWaiting--;
 			sem_post(&wEnter);
 		}
-		//sem_post(&lock); //why?
+		sem_post(&lock); //why?
 		useBathroom(myId);
 		sem_wait(&lock);
 		womenUsingBathroom--;
@@ -135,9 +134,11 @@ void * wWork(void * id){
 
 void useBathroom(long id){
 	sem_wait(&lock);
-	unsigned int bathroomTime = rand() % 5;
-	cout << "Worker number " << id << "is using the bathroom for " << bathroomTime << "seconds!" << endl;
+	unsigned int bathroomTime = rand() % 10;
+	cout << "Worker number " << id << " is using the bathroom for " << bathroomTime << " seconds!" << endl;
+	printf("men using bathroom: %d, women using bathroom: %d, men in line: %d, women in line: %d\n", menUsingBathroom, womenUsingBathroom, menWaiting, womenWaiting);
 	sem_post(&lock);
 	sleep(bathroomTime);
+	cout << "worker number " << id << " is leaving the bathroom" << endl;
 	return;
 }

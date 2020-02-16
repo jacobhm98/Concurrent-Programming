@@ -7,7 +7,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <unistd.h>
-#define DEBUG 1
+#define DEBUG 0
 #define DEFAULT_SIZE 1000
 #define SHARED 1
 
@@ -71,25 +71,35 @@ void * mWork(void * id){
 		
 		//wait for bathroom to be empty of women and join the cue
 		sem_wait(&lock);
+		//join the queue if there are women in the bathroom, and give up lock to critical section
 		if (womenUsingBathroom > 0){
 			menWaiting++;
 			sem_post(&lock);
 			sem_wait(&mEnter);
 		}
+		//when we get out of queue we can use the bathroom
 		menUsingBathroom++;
-		//empty cue, pass the baton
+		//if we are allowed to enter bathroom, allow the next person in the queue to enter bathroom also
 		if (menWaiting > 0){
 			menWaiting--;
 			sem_post(&mEnter);
 		}
-		sem_post(&lock); //why?
+		//if theres nobody in the queue, we asked to use the bathroom when there was no woman in the bathroom
+		//this means that we need to give up lock to crit section here
+		else {
+			sem_post(&lock);
+		}
 		useBathroom(myId);
+		//critical section with respect to counters
 		sem_wait(&lock);
 		menUsingBathroom--;
+		//if we are the last man to exit the bathroom, and there are women in the queue, allow
+		//the first woman to exit the queue and enter the bathroom
 		if (menUsingBathroom == 0 && womenWaiting > 0){
 			womenWaiting--;
 			sem_post(&wEnter);
 		}
+		//give up lock to critical section
 		sem_post(&lock);
 	}		
 	return NULL;
@@ -101,11 +111,14 @@ void * wWork(void * id){
 		//atomically generate worktime and go to work, as we cannot have concurrent calls to rand
 		sem_wait(&lock);
 		unsigned int workTime = rand() % 60;
+#if DEBUG == 1
 		cout << "worker " << myId << " is boutta work for: " << workTime << " seconds" << endl;
+#endif
 		sem_post(&lock);
 		sleep(workTime);
+#if DEBUG == 1
 		cout << "worker " << myId << " needs to go to the bathroom!" << endl;
-		
+#endif	
 		//wait for bathroom to be empty of women
 		sem_wait(&lock);
 		if (menUsingBathroom > 0){
@@ -119,7 +132,9 @@ void * wWork(void * id){
 			womenWaiting--;
 			sem_post(&wEnter);
 		}
-		sem_post(&lock); //why?
+		else {
+			sem_post(&lock); 
+		}
 		useBathroom(myId);
 		sem_wait(&lock);
 		womenUsingBathroom--;
@@ -134,11 +149,11 @@ void * wWork(void * id){
 
 void useBathroom(long id){
 	sem_wait(&lock);
-	unsigned int bathroomTime = rand() % 10;
-	cout << "Worker number " << id << " is using the bathroom for " << bathroomTime << " seconds!" << endl;
+	unsigned int bathroomTime = rand() % 5;
+	//cout << "Worker number " << id << " is using the bathroom for " << bathroomTime << " seconds!" << endl;
 	printf("men using bathroom: %d, women using bathroom: %d, men in line: %d, women in line: %d\n", menUsingBathroom, womenUsingBathroom, menWaiting, womenWaiting);
 	sem_post(&lock);
 	sleep(bathroomTime);
-	cout << "worker number " << id << " is leaving the bathroom" << endl;
+	//cout << "worker number " << id << " is leaving the bathroom" << endl;
 	return;
 }

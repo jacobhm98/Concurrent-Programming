@@ -64,15 +64,19 @@ void * mWork(void * id){
 		//atomically generate worktime and go to work, as we cannot have concurrent calls to rand
 		sem_wait(&lock);
 		unsigned int workTime = rand() % 60;
+#if DEBUG == 1
 		cout << "worker " << myId << " is boutta work for: " << workTime << " seconds" << endl;
+#endif
 		sem_post(&lock);
 		sleep(workTime);
+#if DEBUG == 1
 		cout << "worker " << myId << " needs to go to the bathroom!" << endl;
+#endif	
 		
 		//wait for bathroom to be empty of women and join the cue
 		sem_wait(&lock);
-		//join the queue if there are women in the bathroom, and give up lock to critical section
-		if (womenUsingBathroom > 0){
+		//join the queue if there are women in the bathroom or women waiting in line, and give up lock to critical section
+		if (womenUsingBathroom > 0 || womenWaiting > 0){
 			menWaiting++;
 			sem_post(&lock);
 			sem_wait(&mEnter);
@@ -104,11 +108,10 @@ void * mWork(void * id){
 	}		
 	return NULL;
 }
-
+//inverse of mWork, but for women. Not very pretty, but it works.
 void * wWork(void * id){
 	long myId = (long) id;
 	while (true){
-		//atomically generate worktime and go to work, as we cannot have concurrent calls to rand
 		sem_wait(&lock);
 		unsigned int workTime = rand() % 60;
 #if DEBUG == 1
@@ -119,15 +122,13 @@ void * wWork(void * id){
 #if DEBUG == 1
 		cout << "worker " << myId << " needs to go to the bathroom!" << endl;
 #endif	
-		//wait for bathroom to be empty of women
 		sem_wait(&lock);
-		if (menUsingBathroom > 0){
+		if (menUsingBathroom > 0 || menWaiting > 0){
 			womenWaiting++;
 			sem_post(&lock);
 			sem_wait(&wEnter);
 		}
 		womenUsingBathroom++;
-		//empty cue, pass the baton
 		if (womenWaiting > 0){
 			womenWaiting--;
 			sem_post(&wEnter);

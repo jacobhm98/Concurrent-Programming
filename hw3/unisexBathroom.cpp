@@ -1,3 +1,18 @@
+/* A program which attempts to solve the unisex bathroom problem in a fair way. Given x and y workers of male and female genders, can we
+ * coordinate their access to a single bathroom so that men and women never use the bathroom at the same time, and so that a person waiting
+ * in line is guaranteed to be allowed to use the bathroom eventually? A worker is represented by a Posix Thread, and work time is represented
+ * by sleeping a random amount of time. Bathroom use is represented by sleeping a smaller random amount of time. All synchronization is
+ * accomplished using semaphores and global variables to keep track of the program state.
+ *
+ * Compile: g++ unisexBathroom.cpp -o outputExecutable -lpthread
+ * Execute: ./outputExecutable numMen numWomen
+ * For a more verbose updating of events, define DEBUG to 1
+ * If no args are given, the program will be run with 1000 men and 1000 women
+ *
+ * Authored by Jacob Hedén Malm (@jacobhm98) for Concurrent Programming at KTH
+ * 17/02/2020
+ */
+
 #ifndef _REENTRANT
 #define _REENTRANT
 #endif

@@ -151,10 +151,14 @@ void * wWork(void * id){
 void useBathroom(long id){
 	sem_wait(&lock);
 	unsigned int bathroomTime = rand() % 5;
-	//cout << "Worker number " << id << " is using the bathroom for " << bathroomTime << " seconds!" << endl;
+#if DEBUG == 1	
+	cout << "Worker number " << id << " is using the bathroom for " << bathroomTime << " seconds!" << endl;
+#endif	
 	printf("men using bathroom: %d, women using bathroom: %d, men in line: %d, women in line: %d\n", menUsingBathroom, womenUsingBathroom, menWaiting, womenWaiting);
 	sem_post(&lock);
 	sleep(bathroomTime);
-	//cout << "worker number " << id << " is leaving the bathroom" << endl;
+#if DEBUG == 1	
+	cout << "worker number " << id << " is leaving the bathroom" << endl;
+#endif
 	return;
 }

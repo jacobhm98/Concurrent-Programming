@@ -16,6 +16,7 @@
 #ifndef _REENTRANT
 #define _REENTRANT
 #endif
+#include "Monitor.h"
 #include <semaphore.h>
 #include <pthread.h>
 #include <iostream>

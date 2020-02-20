@@ -7,7 +7,9 @@
 #include <cstdlib>
 #include <ctime>
 #include <unistd.h>
-
+#define DEBUG 0
+using std::cout;
+using std::endl;
 Monitor::Monitor(){
 
 	pthread_mutex_init(&lock, NULL);
@@ -24,20 +26,30 @@ void Monitor::manEnter(long id){
 	pthread_mutex_lock(&lock);
 	if (womenUsingBathroom > 0 || womenWaiting > 0){
 		menWaiting++;
-		pthread_cond_wait(&menQueue, &lock);	
+#if DEBUG == 1
+		cout << "man number " << id << " has joined the queue" << endl;
+#endif
+		pthread_cond_wait(&menQueue, &lock);
 	}
 	menUsingBathroom++;
 	if (menWaiting > 0){
 		menWaiting--;
 		pthread_cond_signal(&menQueue);
 	}
+#if DEBUG == 1
+	cout << "man number " << id << " is entering the bathroom" << endl;
+#endif
 	pthread_mutex_unlock(&lock);
+	printf("Men in bathroom: %d, Women in bathroom: %d, Men waiting: %d, Women waiting: %d\n", menUsingBathroom, womenUsingBathroom, menWaiting, womenWaiting);
 	return;
 }
 void Monitor::womanEnter(long id){
 	pthread_mutex_lock(&lock);
 	if (menUsingBathroom > 0 || menWaiting > 0){
-		menWaiting++;
+		womenWaiting++;
+#if DEBUG == 1
+		cout << "woman number " << id << " has joined the queue" << endl;
+#endif
 		pthread_cond_wait(&womenQueue, &lock);	
 	}
 	womenUsingBathroom++;
@@ -45,6 +57,10 @@ void Monitor::womanEnter(long id){
 		womenWaiting--;
 		pthread_cond_signal(&womenQueue);
 	}
+#if DEBUG == 1
+	cout << "woman number " << id << " is entering the bathroom" << endl;
+#endif
+	printf("Men in bathroom: %d, Women in bathroom: %d, Men waiting: %d, Women waiting: %d\n", menUsingBathroom, womenUsingBathroom, menWaiting, womenWaiting);
 	pthread_mutex_unlock(&lock);
 	return;
 	
@@ -57,6 +73,10 @@ void Monitor::manExit(long id) {
 		womenWaiting--;
 		pthread_cond_signal(&womenQueue);
 	}
+#if DEBUG == 1
+	cout << "man number " << id << " is leaving the bathroom" << endl;
+#endif
+	printf("Men in bathroom: %d, Women in bathroom: %d, Men waiting: %d, Women waiting: %d\n", menUsingBathroom, womenUsingBathroom, menWaiting, womenWaiting);
 	pthread_mutex_unlock(&lock);
 	return;
 }
@@ -67,6 +87,10 @@ void Monitor::womanExit(long id){
 		menWaiting--;
 		pthread_cond_signal(&menQueue);
 	}
+#if DEBUG == 1
+	cout << "woman number " << id << " is leaving the bathroom" << endl;
+#endif
+	printf("Men in bathroom: %d, Women in bathroom: %d, Men waiting: %d, Women waiting: %d\n", menUsingBathroom, womenUsingBathroom, menWaiting, womenWaiting);
 	pthread_mutex_unlock(&lock);
 	return;
 	

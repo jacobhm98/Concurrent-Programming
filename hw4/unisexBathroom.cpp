@@ -23,7 +23,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <unistd.h>
-#define DEBUG 1
+#define DEBUG 0
 #define DEFAULT_SIZE 1000
 #define SHARED 1
 
@@ -55,7 +55,7 @@ int main(int argc, char **argv){
 		pthread_create(&men[i], NULL, mWork, (void *) i);
 	}
 	for (long i = 0; i < numWomen; i++){
-		pthread_create(&women[i], NULL, wWork, (void *) (i + numMen));
+		pthread_create(&women[i], NULL, wWork, (void *) (i));
 	}
 	for (int i = 0; i < numMen; i++){
 		pthread_join(men[i], NULL);
@@ -74,13 +74,10 @@ void * mWork(void * id){
 		pthread_mutex_lock(&mutex);
 		unsigned int workTime = rand() % 60;
 #if DEBUG == 1
-		cout << "worker " << myId << " is boutta work for: " << workTime << " seconds" << endl;
+		cout << "Man number  " << myId << " is boutta work for: " << workTime << " seconds" << endl;
 #endif
 		pthread_mutex_unlock(&mutex);
 		sleep(workTime);
-#if DEBUG == 1
-		cout << "worker " << myId << " needs to go to the bathroom!" << endl;
-#endif	
 		monitor.manEnter(myId);
 		useBathroom(myId);
 		monitor.manExit(myId);
@@ -93,13 +90,10 @@ void * wWork(void * id){
 		pthread_mutex_lock(&mutex);
 		unsigned int workTime = rand() % 60;
 #if DEBUG == 1
-		cout << "worker " << myId << " is boutta work for: " << workTime << " seconds" << endl;
+		cout << "Woman number " << myId << " is boutta work for: " << workTime << " seconds" << endl;
 #endif
 		pthread_mutex_unlock(&mutex);
 		sleep(workTime);
-#if DEBUG == 1
-		cout << "worker " << myId << " needs to go to the bathroom!" << endl;
-#endif	
 		monitor.womanEnter(myId);
 		useBathroom(myId);
 		monitor.womanExit(myId);
@@ -110,13 +104,7 @@ void * wWork(void * id){
 void useBathroom(long id){
 	pthread_mutex_lock(&mutex);
 	unsigned int bathroomTime = rand() % 5;
-#if DEBUG == 1	
-	cout << "Worker number " << id << " is using the bathroom for " << bathroomTime << " seconds!" << endl;
-#endif	
 	pthread_mutex_unlock(&mutex);
 	sleep(bathroomTime);
-#if DEBUG == 1	
-	cout << "worker number " << id << " is leaving the bathroom" << endl;
-#endif
 	return;
 }

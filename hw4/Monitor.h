@@ -17,10 +17,10 @@ class Monitor{
 	pthread_cond_t womenQueue;	
 	public:
 		Monitor();
-		void manEnter();
-		void womanEnter();
-		void manExit();
-		void womanExit();
+		void manEnter(long);
+		void womanEnter(long);
+		void manExit(long);
+		void womanExit(long);
 
 };
 

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+g++ unisexBathroom.cpp -o unisexbathroom -lpthread

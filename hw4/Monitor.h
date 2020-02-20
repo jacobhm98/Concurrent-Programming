@@ -8,6 +8,7 @@
 #endif
 
 class Monitor{
+	//counters, synchronization structures, and timer
 	int womenUsingBathroom;
 	int menUsingBathroom;
 	int womenWaiting;
@@ -17,6 +18,7 @@ class Monitor{
 	pthread_cond_t womenQueue;	
 	double startTime;
 	public:
+		//constructor exit/enter controls for each gender and timing logic
 		Monitor();
 		void manEnter(long);
 		void womanEnter(long);

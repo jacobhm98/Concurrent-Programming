@@ -1,8 +1,13 @@
-
+/*
+ * The implementation of the monitor interface specified in Monitor.h. It implements the waiting logic of the last solution 
+ * using two condition variables in place of the signalling semaphores, and a mutex lock in place of the binary semaphore. Helper class to unisexBathroom.cpp.
+ *
+ * Two different types of printouts available, define DEBUG to either 0 or 1
+ */
 #ifndef _REENTRANT
 #define _REENTRANT
 #endif
-#include "Monitor.h"
+#include "Monitor.h"	//interface specification
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
@@ -26,15 +31,15 @@ double Monitor::read_timer() {
     return (end.tv_sec - start.tv_sec) + 1.0e-6 * (end.tv_usec - start.tv_usec);
 }
 
+//return time program has been running
 double Monitor::timePassed(){
-	
 	auto currentTime = read_timer();
 	return currentTime - startTime;
 	
 }
 
+//initialize locks and condvariables, counters, and start the timer.
 Monitor::Monitor(){
-
 	pthread_mutex_init(&lock, NULL);
 	pthread_cond_init(&menQueue, NULL);
 	pthread_cond_init(&womenQueue, NULL);
@@ -44,6 +49,7 @@ Monitor::Monitor(){
 	womenWaiting = 0;
 	startTime = read_timer();
 }
+
 
 void Monitor::manEnter(long id){
 	pthread_mutex_lock(&lock);

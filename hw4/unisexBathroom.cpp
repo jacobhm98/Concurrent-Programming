@@ -2,15 +2,15 @@
  * coordinate their access to a single bathroom so that men and women never use the bathroom at the same time, and so that a person waiting
  * in line is guaranteed to be allowed to use the bathroom eventually? A worker is represented by a Posix Thread, and work time is represented
  * by sleeping a random amount of time. Bathroom use is represented by sleeping a smaller random amount of time. All synchronization is
- * accomplished using semaphores and global variables to keep track of the program state.
+ * accomplished using a monitor which is implemented with 4 counters, 2 condition variables, and a mutex lock
  *
- * Compile: g++ unisexBathroom.cpp -o outputExecutable -lpthread
- * Execute: ./outputExecutable numMen numWomen
+ * Compile: There is a script provided, ./makeFile, which compiles this and the monitor program into ./unisexBathroom.
+ * Execute: ./unisexBathroom numMen numWomen
  * For a more verbose updating of events, define DEBUG to 1
  * If no args are given, the program will be run with 1000 men and 1000 women
  *
  * Authored by Jacob Hedén Malm (@jacobhm98) for Concurrent Programming at KTH
- * 17/02/2020
+ * 20/02/2020
  */
 
 #ifndef _REENTRANT
@@ -78,6 +78,7 @@ void * mWork(void * id){
 #endif
 		pthread_mutex_unlock(&mutex);
 		sleep(workTime);
+		//request acces from monitor 
 		monitor.manEnter(myId);
 		useBathroom(myId);
 		monitor.manExit(myId);
@@ -94,6 +95,7 @@ void * wWork(void * id){
 #endif
 		pthread_mutex_unlock(&mutex);
 		sleep(workTime);
+		//request acces from monitor
 		monitor.womanEnter(myId);
 		useBathroom(myId);
 		monitor.womanExit(myId);

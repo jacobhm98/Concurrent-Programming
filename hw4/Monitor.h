@@ -15,12 +15,15 @@ class Monitor{
 	pthread_mutex_t lock;
 	pthread_cond_t menQueue;
 	pthread_cond_t womenQueue;	
+	double startTime;
 	public:
 		Monitor();
 		void manEnter(long);
 		void womanEnter(long);
 		void manExit(long);
 		void womanExit(long);
+		double read_timer();
+		double timePassed();
 
 };
 

@@ -1,0 +1,3 @@
+[submodule "Concurrent-Programming-Project"]
+	path = Concurrent-Programming-Project
+	url = git@github.com:jacobhm98/Concurrent-Programming-Project.git

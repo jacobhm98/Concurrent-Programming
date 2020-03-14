@@ -19,12 +19,13 @@ DEFAULT_SIZE	hw4/unisexBathroom.cpp	/^#define DEFAULT_SIZE /;"	d	file:
 DEFAULT_THREADS	hw2/deprecatedPalindromes/palindrome.cpp	/^#define DEFAULT_THREADS /;"	d	file:
 DEFAULT_THREADS	hw2/palindrome.cpp	/^#define DEFAULT_THREADS /;"	d	file:
 Hello	introductionPThreads/helloworld.c	/^void* Hello(void* rank){$/;"	f	typeref:typename:void *
+Jacobi	Concurrent-Programming-Project/Multigrid/Jacobi.h	/^class Jacobi {$/;"	c
 MAXSIZE	hw1/matrixSum.c	/^#define MAXSIZE /;"	d	file:
 MAXSIZE	hw1/quickSort.c	/^#define MAXSIZE /;"	d	file:
 MAXWORKERS	hw1/matrixSum.c	/^#define MAXWORKERS /;"	d	file:
 MONITOR_H	hw4/Monitor.h	/^#define MONITOR_H$/;"	d
-Matrix	Concurrent-Programming-Project/JacobiConc/JacobiConcurrent.cpp	/^vector<vector<vector<double>>> Matrix;$/;"	v	typeref:typename:vector<vector<vector<double>>>
-Matrix	Concurrent-Programming-Project/JacobiSeq/JacobiSequential.cpp	/^vector<vector<vector<double>>> Matrix;$/;"	v	typeref:typename:vector<vector<vector<double>>>
+Matrix	Concurrent-Programming-Project/Jacobi/JacobiConc/JacobiConcurrent.cpp	/^vector<vector<vector<double>>> Matrix;$/;"	v	typeref:typename:vector<vector<vector<double>>>
+Matrix	Concurrent-Programming-Project/Jacobi/JacobiSeq/JacobiSequential.cpp	/^vector<vector<vector<double>>> Matrix;$/;"	v	typeref:typename:vector<vector<vector<double>>>
 Monitor	hw4/Monitor.cpp	/^Monitor::Monitor(){$/;"	f	class:Monitor
 Monitor	hw4/Monitor.h	/^class Monitor{$/;"	c
 NUM_THREADS	hw2/deprecatedPalindromes/palindrome.cpp	/^int NUM_THREADS;$/;"	v	typeref:typename:int
@@ -32,7 +33,7 @@ NUM_THREADS	hw2/palindrome.cpp	/^int NUM_THREADS;$/;"	v	typeref:typename:int
 SHARED	hw3/unisexBathroom.cpp	/^#define SHARED /;"	d	file:
 SHARED	hw4/unisexBathroom.cpp	/^#define SHARED /;"	d	file:
 Worker	hw1/matrixSum.c	/^void *Worker(void *arg) {$/;"	f	typeref:typename:void *
-_REENTRANT	Concurrent-Programming-Project/JacobiConc/JacobiConcurrent.cpp	/^#define _REENTRANT$/;"	d	file:
+_REENTRANT	Concurrent-Programming-Project/Jacobi/JacobiConc/JacobiConcurrent.cpp	/^#define _REENTRANT$/;"	d	file:
 _REENTRANT	hw1/matrixSum.c	/^#define _REENTRANT /;"	d	file:
 _REENTRANT	hw1/quickSort.c	/^#define _REENTRANT /;"	d	file:
 _REENTRANT	hw2/deprecatedPalindromes/palindrome.cpp	/^#define _REENTRANT$/;"	d	file:
@@ -47,19 +48,37 @@ bagBarrier	hw1/matrixSum.c	/^pthread_mutex_t bagBarrier;$/;"	v	typeref:typename:
 bagOfTasks	hw1/matrixSum.c	/^int bagOfTasks(){	\/\/return next row to compute$/;"	f	typeref:typename:int
 barrier	hw1/matrixSum.c	/^pthread_mutex_t barrier;  \/* mutex lock for the barrier *\/$/;"	v	typeref:typename:pthread_mutex_t
 contribute	hw1/matrixSum.c	/^void contribute(int partSum,int newMin, int newMinPosX, int newMinPosY, int newMax, int newMaxPo/;"	f	typeref:typename:void
+correspondingI	Concurrent-Programming-Project/Multigrid/multigridConc/multigridConc.cpp	/^			int correspondingI = 2*i;$/;"	v	typeref:typename:int
+correspondingI	Concurrent-Programming-Project/Multigrid/multigridSeq/multigridSeq.cpp	/^			int correspondingI = 2*i;$/;"	v	typeref:typename:int
+correspondingJ	Concurrent-Programming-Project/Multigrid/multigridConc/multigridConc.cpp	/^			int correspondingJ = 2*j;$/;"	v	typeref:typename:int
+correspondingJ	Concurrent-Programming-Project/Multigrid/multigridSeq/multigridSeq.cpp	/^			int correspondingJ = 2*j;$/;"	v	typeref:typename:int
 end_time	hw1/matrixSum.c	/^double start_time, end_time; \/* start and end times *\/$/;"	v	typeref:typename:double
 go	hw1/matrixSum.c	/^pthread_cond_t go;        \/* condition variable for leaving *\/$/;"	v	typeref:typename:pthread_cond_t
-initializeGrid	Concurrent-Programming-Project/JacobiConc/JacobiConcurrent.cpp	/^void initializeGrid(int gridSize){$/;"	f	typeref:typename:void
-initializeGrid	Concurrent-Programming-Project/JacobiSeq/JacobiSequential.cpp	/^void initializeGrid(int gridSize){$/;"	f	typeref:typename:void
+i	Concurrent-Programming-Project/Multigrid/multigridConc/multigridConc.cpp	/^	for (int i = 1; i < newSize - 1; ++i){$/;"	v	typeref:typename:int
+i	Concurrent-Programming-Project/Multigrid/multigridSeq/multigridSeq.cpp	/^	for (int i = 1; i < newSize - 1; ++i){$/;"	v	typeref:typename:int
+initializeGrid	Concurrent-Programming-Project/Jacobi/JacobiConc/JacobiConcurrent.cpp	/^void initializeGrid(int gridSize){$/;"	f	typeref:typename:void
+initializeGrid	Concurrent-Programming-Project/Jacobi/JacobiSeq/JacobiSequential.cpp	/^void initializeGrid(int gridSize){$/;"	f	typeref:typename:void
+initializeGrid	Concurrent-Programming-Project/Multigrid/multigridConc/multigridConc.cpp	/^void initializeGrid(int gridSize, vector<vector<vector<double>>> &Matrix){$/;"	f	typeref:typename:void
+initializeGrid	Concurrent-Programming-Project/Multigrid/multigridSeq/multigridSeq.cpp	/^void initializeGrid(int gridSize, vector<vector<vector<double>>> &Matrix){$/;"	f	typeref:typename:void
+interpolate	Concurrent-Programming-Project/Multigrid/multigridConc/multigridConc.cpp	/^void interpolate(int numWorkers, vector<vector<vector<double>>> &Matrix){$/;"	f	typeref:typename:void
+interpolate	Concurrent-Programming-Project/Multigrid/multigridSeq/multigridSeq.cpp	/^void interpolate(vector<vector<vector<double>>> &Matrix){$/;"	f	typeref:typename:void
 isPalindrome	hw2/deprecatedPalindromes/palindrome.cpp	/^bool isPalindrome(string word){$/;"	f	typeref:typename:bool
 isPalindrome	hw2/palindrome.cpp	/^bool isPalindrome(string word){$/;"	f	typeref:typename:bool
+iterate	Concurrent-Programming-Project/Multigrid/multigridSeq/JacobiSequential.cpp	/^void Jacobi::iterate(int numIters, vector<vector<vector<double>>> &Matrix){$/;"	f	class:Jacobi	typeref:typename:void
+iterate	Concurrent-Programming-Project/Multigrid/multigridSeq/JacobiSequential.cpp	/^void Jacobi::iterate(vector<vector<vector<double>>> &Matrix){$/;"	f	class:Jacobi	typeref:typename:void
+iterateP	Concurrent-Programming-Project/Multigrid/multigridConc/JacobiConcurrent.cpp	/^void Jacobi::iterateP(int numWorkers, int numIters, vector<vector<vector<double>>> &Matrix){$/;"	f	class:Jacobi	typeref:typename:void
+iterateP	Concurrent-Programming-Project/Multigrid/multigridConc/JacobiConcurrent.cpp	/^void Jacobi::iterateP(int numWorkers, vector<vector<vector<double>>> &Matrix){$/;"	f	class:Jacobi	typeref:typename:void
+j	Concurrent-Programming-Project/Multigrid/multigridConc/multigridConc.cpp	/^		for (int j = 1; j < newSize - 1; ++j){$/;"	v	typeref:typename:int
+j	Concurrent-Programming-Project/Multigrid/multigridSeq/multigridSeq.cpp	/^		for (int j = 1; j < newSize - 1; ++j){$/;"	v	typeref:typename:int
 lock	hw3/unisexBathroom.cpp	/^sem_t lock;$/;"	v	typeref:typename:sem_t
 lock	hw4/Monitor.h	/^	pthread_mutex_t lock;$/;"	m	class:Monitor	typeref:typename:pthread_mutex_t
 mEnter	hw3/unisexBathroom.cpp	/^sem_t mEnter;$/;"	v	typeref:typename:sem_t
 mWork	hw3/unisexBathroom.cpp	/^void * mWork(void * id){$/;"	f	typeref:typename:void *
 mWork	hw4/unisexBathroom.cpp	/^void * mWork(void * id){$/;"	f	typeref:typename:void *
-main	Concurrent-Programming-Project/JacobiConc/JacobiConcurrent.cpp	/^int main (int argc, char * argv[]){$/;"	f	typeref:typename:int
-main	Concurrent-Programming-Project/JacobiSeq/JacobiSequential.cpp	/^int main (int argc, char * argv[]){$/;"	f	typeref:typename:int
+main	Concurrent-Programming-Project/Jacobi/JacobiConc/JacobiConcurrent.cpp	/^int main (int argc, char * argv[]){$/;"	f	typeref:typename:int
+main	Concurrent-Programming-Project/Jacobi/JacobiSeq/JacobiSequential.cpp	/^int main (int argc, char * argv[]){$/;"	f	typeref:typename:int
+main	Concurrent-Programming-Project/Multigrid/multigridConc/multigridConc.cpp	/^int main (int argc, char * argv[]){$/;"	f	typeref:typename:int
+main	Concurrent-Programming-Project/Multigrid/multigridSeq/multigridSeq.cpp	/^int main (int argc, char * argv[]){$/;"	f	typeref:typename:int
 main	hw1/matrixSum.c	/^int main(int argc, char *argv[]) {$/;"	f	typeref:typename:int
 main	hw1/quickSort.c	/^int main(int argc, char * argv[]){$/;"	f	typeref:typename:int
 main	hw2/deprecatedPalindromes/palindrome.cpp	/^int main (int argc, char * argv[]){$/;"	f	typeref:typename:int
@@ -71,8 +90,10 @@ manEnter	hw4/Monitor.cpp	/^void Monitor::manEnter(long id){$/;"	f	class:Monitor	
 manExit	hw4/Monitor.cpp	/^void Monitor::manExit(long id) {$/;"	f	class:Monitor	typeref:typename:void
 matrix	hw1/matrixSum.c	/^int matrix[MAXSIZE][MAXSIZE]; \/* matrix *\/$/;"	v	typeref:typename:int[][]
 max	hw1/matrixSum.c	/^int max = 0; \/\/variable to hold maximum value in matrix$/;"	v	typeref:typename:int
-maxDiff	Concurrent-Programming-Project/JacobiConc/JacobiConcurrent.cpp	/^double maxDiff(int gridSize){$/;"	f	typeref:typename:double
-maxDiff	Concurrent-Programming-Project/JacobiSeq/JacobiSequential.cpp	/^double maxDiff(int gridSize){$/;"	f	typeref:typename:double
+maxDiff	Concurrent-Programming-Project/Jacobi/JacobiConc/JacobiConcurrent.cpp	/^double maxDiff(int gridSize){$/;"	f	typeref:typename:double
+maxDiff	Concurrent-Programming-Project/Jacobi/JacobiSeq/JacobiSequential.cpp	/^double maxDiff(int gridSize){$/;"	f	typeref:typename:double
+maxDiff	Concurrent-Programming-Project/Multigrid/multigridConc/JacobiConcurrent.cpp	/^double Jacobi::maxDiff(vector<vector<vector<double>>> &Matrix){$/;"	f	class:Jacobi	typeref:typename:double
+maxDiff	Concurrent-Programming-Project/Multigrid/multigridSeq/JacobiSequential.cpp	/^double Jacobi::maxDiff(vector<vector<vector<double>>> &Matrix){$/;"	f	class:Jacobi	typeref:typename:double
 maxPosX	hw1/matrixSum.c	/^int maxPosX;$/;"	v	typeref:typename:int
 maxPosY	hw1/matrixSum.c	/^int maxPosY;$/;"	v	typeref:typename:int
 menQueue	hw4/Monitor.h	/^	pthread_cond_t menQueue;$/;"	m	class:Monitor	typeref:typename:pthread_cond_t
@@ -85,21 +106,35 @@ minPosX	hw1/matrixSum.c	/^int minPosX;$/;"	v	typeref:typename:int
 minPosY	hw1/matrixSum.c	/^int minPosY;$/;"	v	typeref:typename:int
 monitor	hw4/unisexBathroom.cpp	/^Monitor monitor;$/;"	v	typeref:typename:Monitor
 mutex	hw4/unisexBathroom.cpp	/^pthread_mutex_t mutex;$/;"	v	typeref:typename:pthread_mutex_t
+newSize	Concurrent-Programming-Project/Multigrid/multigridConc/multigridConc.cpp	/^	int newSize = (Matrix[0].size() + 1) \/ 2;$/;"	v	typeref:typename:int
+newSize	Concurrent-Programming-Project/Multigrid/multigridSeq/multigridSeq.cpp	/^	int newSize = (Matrix[0].size() + 1) \/ 2;$/;"	v	typeref:typename:int
 numArrived	hw1/matrixSum.c	/^int numArrived = 0;       \/* number who have arrived *\/$/;"	v	typeref:typename:int
 numWorkers	hw1/matrixSum.c	/^int numWorkers;           \/* number of workers *\/ $/;"	v	typeref:typename:int
 partition	hw1/quickSort.c	/^int partition(int low, int high){$/;"	f	typeref:typename:int
 passArgs	hw1/quickSort.c	/^void * passArgs(void * arg){$/;"	f	typeref:typename:void *
 printArray	hw1/quickSort.c	/^void printArray(){$/;"	f	typeref:typename:void
-printMatrix	Concurrent-Programming-Project/JacobiConc/JacobiConcurrent.cpp	/^void printMatrix(int gridSize, int current){$/;"	f	typeref:typename:void
-printMatrix	Concurrent-Programming-Project/JacobiSeq/JacobiSequential.cpp	/^void printMatrix(int gridSize, int current){$/;"	f	typeref:typename:void
+printMatrix	Concurrent-Programming-Project/Jacobi/JacobiConc/JacobiConcurrent.cpp	/^void printMatrix(int gridSize, int current){$/;"	f	typeref:typename:void
+printMatrix	Concurrent-Programming-Project/Jacobi/JacobiSeq/JacobiSequential.cpp	/^void printMatrix(int gridSize, int current){$/;"	f	typeref:typename:void
+printMatrix	Concurrent-Programming-Project/Multigrid/multigridConc/JacobiConcurrent.cpp	/^void Jacobi::printMatrix(vector<vector<vector<double>>> &Matrix, int current){$/;"	f	class:Jacobi	typeref:typename:void
+printMatrix	Concurrent-Programming-Project/Multigrid/multigridConc/multigridConc.cpp	/^void printMatrix(vector<vector<vector<double>>> &Matrix, int current){$/;"	f	typeref:typename:void
+printMatrix	Concurrent-Programming-Project/Multigrid/multigridSeq/JacobiSequential.cpp	/^void Jacobi::printMatrix(vector<vector<vector<double>>> &Matrix, int current){$/;"	f	class:Jacobi	typeref:typename:void
+printMatrix	Concurrent-Programming-Project/Multigrid/multigridSeq/multigridSeq.cpp	/^void printMatrix(vector<vector<vector<double>>> &Matrix, int current){$/;"	f	typeref:typename:void
+printMatrixtoFile	Concurrent-Programming-Project/Jacobi/JacobiConc/JacobiConcurrent.cpp	/^void printMatrixtoFile(int current){$/;"	f	typeref:typename:void
+printMatrixtoFile	Concurrent-Programming-Project/Jacobi/JacobiSeq/JacobiSequential.cpp	/^void printMatrixtoFile(int current){$/;"	f	typeref:typename:void
+printMatrixtoFile	Concurrent-Programming-Project/Multigrid/multigridConc/multigridConc.cpp	/^void printMatrixtoFile(vector<vector<vector<double>>> &Matrix, int current){$/;"	f	typeref:typename:void
+printMatrixtoFile	Concurrent-Programming-Project/Multigrid/multigridSeq/multigridSeq.cpp	/^void printMatrixtoFile(vector<vector<vector<double>>> &Matrix, int current){$/;"	f	typeref:typename:void
 quickSort	hw1/quickSort.c	/^void* quickSort(void * arg){$/;"	f	typeref:typename:void *
 read_timer	hw1/matrixSum.c	/^double read_timer() {$/;"	f	typeref:typename:double
 read_timer	hw1/quickSort.c	/^double read_timer() {$/;"	f	typeref:typename:double
 read_timer	hw4/Monitor.cpp	/^double Monitor::read_timer() {$/;"	f	class:Monitor	typeref:typename:double
+resize	Concurrent-Programming-Project/Multigrid/multigridConc/multigridConc.cpp	/^void resize(int gridSize, vector<vector<vector<double>>> &Matrix){$/;"	f	typeref:typename:void
+resize	Concurrent-Programming-Project/Multigrid/multigridSeq/multigridSeq.cpp	/^void resize(int gridSize, vector<vector<vector<double>>> &Matrix){$/;"	f	typeref:typename:void
 reverseWord	hw2/deprecatedPalindromes/palindrome.cpp	/^string reverseWord(string word){$/;"	f	typeref:typename:string
 reverseWord	hw2/palindrome.cpp	/^string reverseWord(string word){$/;"	f	typeref:typename:string
 rowToCompute	hw1/matrixSum.c	/^int rowToCompute = 0;$/;"	v	typeref:typename:int
 sem	hw1/quickSort.c	/^sem_t sem;$/;"	v	typeref:typename:sem_t
+setDirichletBoundaryConditions	Concurrent-Programming-Project/Multigrid/multigridConc/multigridConc.cpp	/^void setDirichletBoundaryConditions(vector<vector<vector<double>>> &Matrix){$/;"	f	typeref:typename:void
+setDirichletBoundaryConditions	Concurrent-Programming-Project/Multigrid/multigridSeq/multigridSeq.cpp	/^void setDirichletBoundaryConditions(vector<vector<vector<double>>> &Matrix){$/;"	f	typeref:typename:void
 size	hw1/matrixSum.c	/^int size, stripSize;  \/* assume size is multiple of numWorkers *\/$/;"	v	typeref:typename:int
 size	hw1/quickSort.c	/^int size;$/;"	v	typeref:typename:int
 startTime	hw4/Monitor.h	/^	double startTime;$/;"	m	class:Monitor	typeref:typename:double
@@ -108,11 +143,15 @@ stripSize	hw1/matrixSum.c	/^int size, stripSize;  \/* assume size is multiple of
 sum	hw1/matrixSum.c	/^int sum = 0;$/;"	v	typeref:typename:int
 sums	hw1/matrixSum.c	/^int sums[MAXWORKERS]; \/* partial sums *\/$/;"	v	typeref:typename:int[]
 swap	hw1/quickSort.c	/^void swap(int i1, int i2){$/;"	f	typeref:typename:void
+tempMatrix	Concurrent-Programming-Project/Multigrid/multigridConc/multigridConc.cpp	/^	vector<vector<vector<double>>> tempMatrix;	$/;"	v	typeref:typename:vector<vector<vector<double>>>
+tempMatrix	Concurrent-Programming-Project/Multigrid/multigridSeq/multigridSeq.cpp	/^	vector<vector<vector<double>>> tempMatrix;	$/;"	v	typeref:typename:vector<vector<vector<double>>>
 threadCounter	hw1/quickSort.c	/^int threadCounter = 0;$/;"	v	typeref:typename:int
 threadcount	introductionPThreads/helloworld.c	/^int threadcount;$/;"	v	typeref:typename:int
 timePassed	hw4/Monitor.cpp	/^double Monitor::timePassed(){$/;"	f	class:Monitor	typeref:typename:double
-updateMatrix	Concurrent-Programming-Project/JacobiConc/JacobiConcurrent.cpp	/^void updateMatrix(int gridSize, int numWorkers){$/;"	f	typeref:typename:void
-updateMatrix	Concurrent-Programming-Project/JacobiSeq/JacobiSequential.cpp	/^void updateMatrix(int gridSize){$/;"	f	typeref:typename:void
+updateMatrix	Concurrent-Programming-Project/Jacobi/JacobiConc/JacobiConcurrent.cpp	/^void updateMatrix(int gridSize, int numWorkers){$/;"	f	typeref:typename:void
+updateMatrix	Concurrent-Programming-Project/Jacobi/JacobiSeq/JacobiSequential.cpp	/^void updateMatrix(int gridSize){$/;"	f	typeref:typename:void
+updateMatrix	Concurrent-Programming-Project/Multigrid/multigridConc/JacobiConcurrent.cpp	/^void Jacobi::updateMatrix(int numWorkers, vector<vector<vector<double>>> &Matrix){$/;"	f	class:Jacobi	typeref:typename:void
+updateMatrix	Concurrent-Programming-Project/Multigrid/multigridSeq/JacobiSequential.cpp	/^void Jacobi::updateMatrix(vector<vector<vector<double>>> &Matrix){$/;"	f	class:Jacobi	typeref:typename:void
 useBathroom	hw3/unisexBathroom.cpp	/^void useBathroom(long id){$/;"	f	typeref:typename:void
 useBathroom	hw4/unisexBathroom.cpp	/^void useBathroom(long id){$/;"	f	typeref:typename:void
 wEnter	hw3/unisexBathroom.cpp	/^sem_t wEnter;$/;"	v	typeref:typename:sem_t
